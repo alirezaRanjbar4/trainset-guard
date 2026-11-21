@@ -49,9 +49,7 @@ public static partial class DatasetGuard
                     continue;
                 }
                 valid++;
-                var normalized = messages!.Select(m => new ChatMessage(m!.Role, Normalize(m.Content!))).ToArray();
-                var promptHash = Hash(JsonSerializer.Serialize(normalized[..^1]));
-                var answerHash = Hash(normalized[^1].Content!);
+                var (promptHash, answerHash) = Fingerprints(example);
                 if (seen.TryGetValue(promptHash, out var first))
                     findings.Add(new(first.AnswerHash == answerHash ? "TSG003" : "TSG004", path, rows, first.Line,
                         first.AnswerHash == answerHash ? "Duplicate normalized prompt and answer." : "Same normalized prompt has a conflicting final answer."));
@@ -65,7 +63,7 @@ public static partial class DatasetGuard
         }
     }
 
-    private static bool ValidConversation(List<ChatMessage?>? messages)
+    internal static bool ValidConversation(List<ChatMessage?>? messages)
     {
         if (messages is null || messages.Count < 2 || messages.Any(m => m is null || string.IsNullOrWhiteSpace(m.Content)))
             return false;
@@ -76,6 +74,12 @@ public static partial class DatasetGuard
             if (messages[i]!.Role != ((i - start) % 2 == 0 ? "user" : "assistant"))
                 return false;
         return true;
+    }
+
+    internal static (string Prompt, string Answer) Fingerprints(ChatExample example)
+    {
+        var normalized = example.Messages!.Select(m => new ChatMessage(m!.Role, Normalize(m.Content!))).ToArray();
+        return (Hash(JsonSerializer.Serialize(normalized[..^1])), Hash(normalized[^1].Content!));
     }
 
     private static string Normalize(string value) => Whitespace().Replace(value.Normalize(NormalizationForm.FormKC).Trim(), " ");

@@ -6,7 +6,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>trainset-guard</ToolCommandName>
     <PackageId>TrainSetGuard.Tool</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>alirezaRanjbar4</Authors>
     <Description>Check chat fine-tuning JSONL for malformed examples, duplicate prompts, conflicting answers, and train/validation leakage.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -33,7 +33,7 @@ One complete JSON object per line:
 
 The supported format is **text-only chat**: an optional initial `system` message, followed by alternating `user` and `assistant` messages, ending in `assistant`. Content must be a nonblank string. Multiple turns and extra metadata properties are allowed. Duplicate JSON property names are rejected.
 
-Tool calls, multimodal content, developer roles, and provider-specific limits are outside v0.1.0. Passing these checks does not guarantee that a provider will accept the data. For example, OpenAI documents additional [fine-tuning format requirements](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
+Tool calls, multimodal content, developer roles, and provider-specific limits are outside v0.2.0. Passing these checks does not guarantee that a provider will accept the data. For example, OpenAI documents additional [fine-tuning format requirements](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ## What gets checked
 
@@ -52,10 +52,10 @@ The checker reads one line at a time and retains hashes/line numbers for compari
 
 ## Install the tool
 
-Download `TrainSetGuard.Tool.0.1.0.nupkg` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.1.0) into an empty folder:
+Download `TrainSetGuard.Tool.0.2.0.nupkg` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.2.0) into an empty folder:
 
 ```sh
-dotnet tool install --global TrainSetGuard.Tool --version 0.1.0 --add-source ./downloaded-package
+dotnet tool install --global TrainSetGuard.Tool --version 0.2.0 --add-source ./downloaded-package
 trainset-guard check --train train.jsonl --validation validation.jsonl
 ```
 
@@ -63,7 +63,7 @@ Or package from source:
 
 ```sh
 dotnet pack src/Cli -c Release -o artifacts
-dotnet tool install --global TrainSetGuard.Tool --version 0.1.0 --add-source ./artifacts
+dotnet tool install --global TrainSetGuard.Tool --version 0.2.0 --add-source ./artifacts
 ```
 
 Distribution is through GitHub Releases; the package is not currently on NuGet.org. The tool has no runtime package dependencies.
@@ -76,7 +76,22 @@ JSON goes to standard output. Diagnostics contain `code`, `file`, 1-based `line`
 trainset-guard check --train train.jsonl --validation validation.jsonl > dataset-report.json
 ```
 
-Exit codes: `0` clean, `1` dataset findings, `2` invalid arguments or an unreadable input. Blank lines count as invalid JSON records. Inputs are never changed and no cleaned/split dataset is generated.
+Exit codes: `0` clean, `1` dataset findings, `2` invalid arguments or an unreadable input. Blank lines count as invalid JSON records. The check command never changes inputs. Use the explicit split command to create new datasets.
+
+## Reproducible prompt-group splitting
+
+```sh
+trainset-guard split --input examples/train.jsonl --train-output artifacts/train.jsonl --validation-output artifacts/validation.jsonl --manifest artifacts/split.json --validation-fraction 0.34 --seed 42
+trainset-guard check --train artifacts/train.jsonl --validation artifacts/validation.jsonl
+```
+
+`split` validates the entire input before writing, rejects malformed conversations and conflicting final answers for a normalized prompt, and preserves every original JSON record and extra metadata. Exact duplicates are retained together, so `check` may still flag duplicate rows inside a resulting split; no automatic deduplication is performed.
+
+Groups use the same case-sensitive prompt fingerprint as `check`, including system instructions and prior turns. Group ranking is SHA-256 of invariant seed text and the prompt digest; ties sort by prompt digest. The same input and seed produce identical files across output paths. Each output preserves original input row order, encoded as UTF-8 without BOM with LF line endings.
+
+The requested fraction selects **prompt groups**, rounded to nearest with midpoint away from zero and clamped to keep both splits nonempty. It must be strictly between 0 and 1, and at least two groups are required. Unequal group sizes can give a different row fraction; the manifest reports requested and actual fractions, row/group counts, seed, fingerprint policy, and source/output SHA-256 hashes. This is not stratified or semantic splitting.
+
+All three destinations must be distinct fresh paths. Existing outputs are never overwritten; files are created exclusively, and files created by a failed write are removed where possible. The JSON manifest and console report omit message contents. The two split datasets intentionally contain the supplied records: keep them private when the source is private.
 
 ## Development
 
