@@ -7,12 +7,36 @@ public static class Application
     {
         if (args is ["--help"] or ["-h"])
         {
-            output.WriteLine("trainset-guard check --train train.jsonl [--validation validation.jsonl]\ntrainset-guard split --input data.jsonl --train-output train.jsonl --validation-output validation.jsonl --manifest split.json [--validation-fraction 0.2] [--seed 42]\nText-only chat JSONL checks and deterministic prompt-group splitting. Exit: 0 success, 1 check findings, 2 invalid arguments/data or file error. Reports omit message content; split files preserve the supplied records.");
+            output.WriteLine("""
+                trainset-guard check --train train.jsonl [--validation validation.jsonl]
+                trainset-guard split --input data.jsonl --train-output train.jsonl --validation-output validation.jsonl --manifest split.json [--validation-fraction 0.2] [--seed 42]
+                trainset-guard dedup --input data.jsonl
+                trainset-guard dedup-export --input data.jsonl --output unique.jsonl --manifest dedup.json
+
+                Text-only chat JSONL checks, prompt-group splitting and opt-in deduplication.
+                dedup only previews; dedup-export requires fresh distinct output paths.
+                Exit: 0 success, 1 check/preview findings, 2 invalid arguments/data or file error.
+                Reports omit message content. Exported dataset files contain the supplied records.
+                """);
             return 0;
         }
-        if (args is ["--version"]) { output.WriteLine("0.2.0"); return 0; }
+        if (args is ["--version"]) { output.WriteLine("0.3.0"); return 0; }
         try
         {
+            if (args.Length > 0 && args[0] == "dedup")
+            {
+                var previewOptions = new Options(args.Skip(1), "--input");
+                var preview = DatasetDeduplicator.Preview(previewOptions.Require("--input"));
+                output.WriteLine(JsonSupport.Serialize(preview));
+                return preview.HasFindings ? 1 : 0;
+            }
+            if (args.Length > 0 && args[0] == "dedup-export")
+            {
+                var exportOptions = new Options(args.Skip(1), "--input", "--output", "--manifest");
+                var exported = DatasetDeduplicator.Export(exportOptions.Require("--input"), exportOptions.Require("--output"), exportOptions.Require("--manifest"));
+                output.WriteLine(JsonSupport.Serialize(exported));
+                return 0;
+            }
             if (args.Length > 0 && args[0] == "split")
             {
                 var splitOptions = new Options(args.Skip(1), "--input", "--train-output", "--validation-output", "--manifest", "--validation-fraction", "--seed");
@@ -21,7 +45,7 @@ public static class Application
                 output.WriteLine(JsonSupport.Serialize(split));
                 return 0;
             }
-            if (args.Length == 0 || args[0] != "check") throw new InputException("Use check or split; see --help.");
+            if (args.Length == 0 || args[0] != "check") throw new InputException("Use check, split, dedup or dedup-export; see --help.");
             var options = new Options(args.Skip(1), "--train", "--validation");
             var report = DatasetGuard.Check(options.Require("--train"), options.Get("--validation"));
             output.WriteLine(JsonSupport.Serialize(report));

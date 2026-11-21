@@ -33,7 +33,7 @@ One complete JSON object per line:
 
 The supported format is **text-only chat**: an optional initial `system` message, followed by alternating `user` and `assistant` messages, ending in `assistant`. Content must be a nonblank string. Multiple turns and extra metadata properties are allowed. Duplicate JSON property names are rejected.
 
-Tool calls, multimodal content, developer roles, and provider-specific limits are outside v0.2.0. Passing these checks does not guarantee that a provider will accept the data. For example, OpenAI documents additional [fine-tuning format requirements](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
+Tool calls, multimodal content, developer roles, and provider-specific limits are outside v0.3.0. Passing these checks does not guarantee that a provider will accept the data. For example, OpenAI documents additional [fine-tuning format requirements](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ## What gets checked
 
@@ -52,10 +52,10 @@ The checker reads one line at a time and retains hashes/line numbers for compari
 
 ## Install the tool
 
-Download `TrainSetGuard.Tool.0.2.0.nupkg` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.2.0) into an empty folder:
+Download `TrainSetGuard.Tool.0.3.0.nupkg` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.3.0) into an empty folder:
 
 ```sh
-dotnet tool install --global TrainSetGuard.Tool --version 0.2.0 --add-source ./downloaded-package
+dotnet tool install --global TrainSetGuard.Tool --version 0.3.0 --add-source ./downloaded-package
 trainset-guard check --train train.jsonl --validation validation.jsonl
 ```
 
@@ -63,7 +63,7 @@ Or package from source:
 
 ```sh
 dotnet pack src/Cli -c Release -o artifacts
-dotnet tool install --global TrainSetGuard.Tool --version 0.2.0 --add-source ./artifacts
+dotnet tool install --global TrainSetGuard.Tool --version 0.3.0 --add-source ./artifacts
 ```
 
 Distribution is through GitHub Releases; the package is not currently on NuGet.org. The tool has no runtime package dependencies.
@@ -92,6 +92,29 @@ Groups use the same case-sensitive prompt fingerprint as `check`, including syst
 The requested fraction selects **prompt groups**, rounded to nearest with midpoint away from zero and clamped to keep both splits nonempty. It must be strictly between 0 and 1, and at least two groups are required. Unequal group sizes can give a different row fraction; the manifest reports requested and actual fractions, row/group counts, seed, fingerprint policy, and source/output SHA-256 hashes. This is not stratified or semantic splitting.
 
 All three destinations must be distinct fresh paths. Existing outputs are never overwritten; files are created exclusively, and files created by a failed write are removed where possible. The JSON manifest and console report omit message contents. The two split datasets intentionally contain the supplied records: keep them private when the source is private.
+
+## Review duplicates before exporting
+
+```sh
+trainset-guard dedup --input examples/duplicates.jsonl
+```
+
+`dedup` is read-only. JSON reports the source hash, physical row count, valid/invalid example counts, normalized unique/duplicate counts, conflicting prompt-group count, diagnostics, and each duplicate's 1-based source line and kept line. `canExport` indicates whether the source is valid and conflict-free; `hasFindings` includes duplicates as well as errors. This sample has four rows, two unique examples and two duplicates, so preview returns exit `1` with `canExport: true`.
+
+Export requires a separate command with two distinct fresh paths:
+
+```sh
+trainset-guard dedup-export --input examples/duplicates.jsonl --output artifacts/unique.jsonl --manifest artifacts/dedup.json
+trainset-guard check --train artifacts/unique.jsonl
+```
+
+Identity is the same normalized prompt **and final answer** used by check/split (`chat-nfkc-v1`): NFKC plus trimmed/collapsed whitespace, with roles, system instructions and prior turns included and case preserved. Metadata does not affect identity. The first original JSON record wins, including its metadata; retained records stay in original source order. Different valid answers for one prompt are conflicts, not a rule for choosing an answer automatically.
+
+Invalid rows and conflicting prompts are visible in preview, but prevent export entirely (exit `2`); the tool does not silently drop them or create a partially cleaned dataset. Preview's unique count refers to valid candidate records only when input errors exist. Exact duplicates of a conflicting answer are still counted, while the group remains unexportable. Empty inputs are also refused.
+
+An export manifest reports source/output row counts and SHA-256 hashes, retained source-line numbers in output order, and removed duplicate-to-kept line mappings. The source stays unchanged. Each command independently inspects its current source snapshot; if input changes after a preview, review the new source hash. Repeated exports of the same source produce identical UTF-8/no-BOM/LF files and manifests across destination paths.
+
+Exit codes: preview returns `0` for clean unique input and `1` for duplicates or input findings; an allowed export returns `0`. Argument/file errors and refused exports return `2`. Reports contain no message text; the explicitly exported dataset contains retained original records. Both deduplication and splitting hold an input snapshot in memory, so size inputs for available memory. Semantic/near-duplicate and entity leakage checks remain outside scope.
 
 ## Development
 

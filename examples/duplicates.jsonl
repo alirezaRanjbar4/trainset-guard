@@ -1,0 +1,4 @@
+{"messages":[{"role":"user","content":"How can I reset my password?"},{"role":"assistant","content":"Use the password reset link."}],"metadata":"first"}
+{"messages":[{"role":"user","content":" How  can I reset my password? "},{"role":"assistant","content":"Use the password reset link."}],"metadata":"later"}
+{"messages":[{"role":"user","content":"سلام دنیا"},{"role":"assistant","content":"درود"}],"metadata":"first-fa"}
+{"messages":[{"role":"user","content":"سلام  دنیا"},{"role":"assistant","content":" درود "}],"metadata":"later-fa"}

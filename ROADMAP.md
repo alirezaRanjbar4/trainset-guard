@@ -13,7 +13,12 @@ Added deterministic prompt-group splitting, no-overwrite outputs, source/output 
 ## Next
 
 - Optional system-message-independent leakage checks with explicit tradeoffs.
-- Add an explicit, reviewable deduplication mode alongside the group splitter.
+- Complete concise architecture and troubleshooting documentation for the bounded first stable scope.
 - Optional near-duplicate detection with measured precision and recall on public fixtures.
 
-Token limits, PII detection, tool-call schemas, provider-specific acceptance, and automatic cleaning are outside the current release. Plans depend on concrete feedback.
+Token limits, PII detection, tool-call schemas, provider-specific acceptance, and silent automatic cleaning are outside the current release. Plans depend on concrete feedback.
+
+## Delivered in v0.3.0
+
+- Read-only normalized exact duplicate/conflict previews and explicit first-occurrence exports.
+- Counts, kept/removed source-line provenance, hashes and fresh output paths; invalid/conflicting input never exports partially.
