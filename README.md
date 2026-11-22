@@ -123,6 +123,8 @@ dotnet test -c Release
 dotnet format --verify-no-changes
 ```
 
+The [design guide](docs/DESIGN.md) covers shared fingerprints, snapshots, command boundaries and exclusive output writes. The [troubleshooting guide](docs/TROUBLESHOOTING.md) explains preview/export exit codes, fresh paths, group fractions, encoding and memory limits.
+
 Use synthetic or redacted examples in [issues](https://github.com/alirezaRanjbar4/trainset-guard/issues/new/choose). See [contributing](CONTRIBUTING.md) and the [roadmap](ROADMAP.md).
 
 ## فارسی
