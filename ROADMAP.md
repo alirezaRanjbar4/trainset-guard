@@ -10,13 +10,13 @@
 
 Added deterministic prompt-group splitting, no-overwrite outputs, source/output hashes, and manifests; validates all rows and preserves duplicates without cross-split prompt leakage.
 
-## Documentation handoff on main
+## Documentation handoff in v0.3.1
 
-The [design guide](docs/DESIGN.md) and [troubleshooting guide](docs/TROUBLESHOOTING.md) cover the delivered workflows and commands for the current published v0.3.0 package.
+The [design guide](docs/DESIGN.md) and [troubleshooting guide](docs/TROUBLESHOOTING.md) cover the delivered workflows and commands for v0.3.1. Both guides, the contribution guide, roadmap, changelog and license are bundled with the README in the tool package, so its relative documentation links remain usable after packing.
 
 ## First-scope completion
 
-The bounded scope includes text-chat validation, normalized duplicate/conflict/leakage reports, deterministic prompt-group splits, explicit dedup exports with provenance, and user/developer guides. Issue #4 still requires a validated closing release: package installation/examples, supported-platform CI and release checksums must pass before marking the scope complete and entering maintenance.
+The bounded scope includes text-chat validation, normalized duplicate/conflict/leakage reports, deterministic prompt-group splits, explicit dedup exports with provenance, and user/developer guides. Version 0.3.1 is the closing release for this scope. Completion evidence is recorded in issue #4 after package installation/examples, supported-platform CI, final-commit metadata and published tag/checksums pass. Keep the repository public and maintained for reproducible bugs and feedback after that handoff; optional future features do not reopen the completed scope.
 
 ## Future candidates
 

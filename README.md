@@ -33,7 +33,7 @@ One complete JSON object per line:
 
 The supported format is **text-only chat**: an optional initial `system` message, followed by alternating `user` and `assistant` messages, ending in `assistant`. Content must be a nonblank string. Multiple turns and extra metadata properties are allowed. Duplicate JSON property names are rejected.
 
-Tool calls, multimodal content, developer roles, and provider-specific limits are outside v0.3.0. Passing these checks does not guarantee that a provider will accept the data. For example, OpenAI documents additional [fine-tuning format requirements](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
+Tool calls, multimodal content, developer roles, and provider-specific limits are outside v0.3.1. Passing these checks does not guarantee that a provider will accept the data. For example, OpenAI documents additional [fine-tuning format requirements](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ## What gets checked
 
@@ -52,10 +52,10 @@ The checker reads one line at a time and retains hashes/line numbers for compari
 
 ## Install the tool
 
-Download `TrainSetGuard.Tool.0.3.0.nupkg` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.3.0) into an empty folder:
+Download `TrainSetGuard.Tool.0.3.1.nupkg` and `SHA256SUMS.txt` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.3.1) into an empty folder. Compare the package SHA-256 with the checksum file before installing:
 
 ```sh
-dotnet tool install --global TrainSetGuard.Tool --version 0.3.0 --add-source ./downloaded-package
+dotnet tool install --global TrainSetGuard.Tool --version 0.3.1 --add-source ./downloaded-package
 trainset-guard check --train train.jsonl --validation validation.jsonl
 ```
 
@@ -63,7 +63,7 @@ Or package from source:
 
 ```sh
 dotnet pack src/Cli -c Release -o artifacts
-dotnet tool install --global TrainSetGuard.Tool --version 0.3.0 --add-source ./artifacts
+dotnet tool install --global TrainSetGuard.Tool --version 0.3.1 --add-source ./artifacts
 ```
 
 Distribution is through GitHub Releases; the package is not currently on NuGet.org. The tool has no runtime package dependencies.
