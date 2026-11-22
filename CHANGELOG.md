@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Added linked design and troubleshooting guides for shared fingerprints, validation, snapshots, exclusive writes, preview/export outcomes, grouped fractions, encoding and memory limits. The closing-release acceptance step remains pending under issue #4.
+
 ## 0.3.0 — 2026-11-21
 
 Added read-only deduplication previews and explicit exports with first-occurrence order/metadata, duplicate line provenance, source/output hashes and no-overwrite destinations. Export refuses malformed conversations and conflicting final answers instead of resolving or dropping them automatically. Reports remain free of message text.
