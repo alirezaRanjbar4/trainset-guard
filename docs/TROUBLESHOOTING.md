@@ -1,13 +1,13 @@
 # Troubleshooting
 
-Commands target the current published **0.3.0** package and synthetic repository examples. Run from the repository root and use fresh output paths. See the [README](../README.md) for report fields/codes and the [design guide](DESIGN.md) for command boundaries and identity rules.
+Commands target the **0.3.1** package and synthetic repository examples. Run from the repository root and use fresh output paths. See the [README](../README.md) for report fields/codes and the [design guide](DESIGN.md) for command boundaries and identity rules.
 
 ## Installation and executable discovery
 
-Download `TrainSetGuard.Tool.0.3.0.nupkg` and `SHA256SUMS.txt` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.3.0) into an empty `downloaded-package` folder. Verify the package SHA-256, then install into a fresh isolated directory:
+Download `TrainSetGuard.Tool.0.3.1.nupkg` and `SHA256SUMS.txt` from the [release](https://github.com/alirezaRanjbar4/trainset-guard/releases/tag/v0.3.1) into an empty `downloaded-package` folder. Verify the package SHA-256, then install into a fresh isolated directory:
 
 ```sh
-dotnet tool install TrainSetGuard.Tool --version 0.3.0 --tool-path ./artifacts/handoff-tool --add-source ./downloaded-package
+dotnet tool install TrainSetGuard.Tool --version 0.3.1 --tool-path ./artifacts/handoff-tool --add-source ./downloaded-package
 ```
 
 Run `./artifacts/handoff-tool/trainset-guard --version` on Linux/macOS or `.\artifacts\handoff-tool\trainset-guard.exe --version` in PowerShell. Check `dotnet --info` if the .NET 10 runtime is unavailable. A package-source error can mean the download folder or version is wrong: this package is not published on NuGet.org. For an existing isolated installation, use `dotnet tool update` with the same package/version/source/tool-path options. Global installs use `--global` instead of `--tool-path ...`; inspect `dotnet tool list --global` and PATH if the command is missing.

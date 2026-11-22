@@ -6,7 +6,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>trainset-guard</ToolCommandName>
     <PackageId>TrainSetGuard.Tool</PackageId>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     <Authors>alirezaRanjbar4</Authors>
     <Description>Check chat fine-tuning JSONL for malformed examples, duplicate prompts, conflicting answers, and train/validation leakage.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -16,6 +16,7 @@
     <PackageTags>dotnet;csharp;ai;machine-learning;training;cli</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../../README.md;../../CONTRIBUTING.md;../../ROADMAP.md;../../CHANGELOG.md;../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../docs/*.md" Pack="true" PackagePath="docs/" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.3.1 — 2026-11-22
 
-Added linked design and troubleshooting guides for shared fingerprints, validation, snapshots, exclusive writes, preview/export outcomes, grouped fractions, encoding and memory limits. The closing-release acceptance step remains pending under issue #4.
+Added linked design and troubleshooting guides for shared fingerprints, validation, snapshots, exclusive writes, preview/export outcomes, grouped fractions, encoding and memory limits. Bundle those guides and linked root documents/license in the final tool package; update installation/version references for the first-scope closing release. Dataset processing and report/exit contracts are unchanged from 0.3.0. Release acceptance evidence is tracked in issue #4.
 
 ## 0.3.0 — 2026-11-21
 

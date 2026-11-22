@@ -20,7 +20,7 @@ public static class Application
                 """);
             return 0;
         }
-        if (args is ["--version"]) { output.WriteLine("0.3.0"); return 0; }
+        if (args is ["--version"]) { output.WriteLine("0.3.1"); return 0; }
         try
         {
             if (args.Length > 0 && args[0] == "dedup")
